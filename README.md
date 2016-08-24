@@ -1,5 +1,7 @@
 # IthoEcoFanRFT
-Cloned from Klusjesman, modified to work on Arduino and ESP8266 with Arduino IDE
+Cloned from superskimmie (who cloned from klusjesman)
+
+This sketch is made to work on Arduino and ESP8266 with Arduino IDE
 
 Will work with a 868MHz CC1101 module.
 The CC1150 may also work, except for receiving (which is not required for controlling an Itho EcoFan).
