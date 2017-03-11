@@ -15,12 +15,13 @@ PubSubClient mqttClient(espClient);
 
 // Configuration
 // WiFi
-const char* ssid = "";
-const char* password = "";
+const char* ssid = "YOURWIFIHERE";
+const char* password = "YOURPASSHERE";
 
 // MQTT
-const char* mqttServer = "";
-const char* mqttTopic = "";
+const char* mqttServer = "192.168.4.14";
+const char* mqttTopic = "/itho/in";
+const char* mqttOutTopic = "/itho/out";
 const char* mqttUsername = "";
 const char* mqttPassword = "";
 
@@ -84,7 +85,7 @@ void reconnectMQTT() {
       helloMessage += " connected";
       char helloMessageChar[helloMessage.length()+1];
       helloMessage.toCharArray(helloMessageChar, helloMessage.length()+1);
-      mqttClient.publish(mqttTopic,helloMessageChar);
+      mqttClient.publish(mqttOutTopic,helloMessageChar);
 
       // Subscribe to the channel
       mqttClient.subscribe(mqttTopic);
@@ -93,14 +94,6 @@ void reconnectMQTT() {
       Serial.print(mqttClient.state());
       Serial.println(" try again in 5 seconds");
     }
-  }
-}
-
-// Send command to RF module, every command is send 3x to be sure it arrives (since we can't check if it has effect)
-void sendCommand(IthoCommand command) {
-  for( int i = 0; i < 3; i++ ) {
-       rf.sendCommand(command);
-       delay(1000);
   }
 }
 
@@ -117,24 +110,24 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Let's not be picky
   s.toLowerCase();
   if (s == "high") {
-    sendCommand(full);
-    mqttClient.publish(mqttTopic,"High (full) speed command send RF");
+    rf.sendCommand(IthoFull);
+    mqttClient.publish(mqttOutTopic,"High speed command send over RF");
   }
   else if (s == "medium") {
-    sendCommand(medium);
-    mqttClient.publish(mqttTopic,"Medium speed command send over RF");
+    rf.sendCommand(IthoMedium);
+    mqttClient.publish(mqttOutTopic,"Medium speed command send over RF");
   }
   else if (s == "low") {
-    sendCommand(low);
-    mqttClient.publish(mqttTopic,"Low speed command send over RF");
+    rf.sendCommand(IthoLow);
+    mqttClient.publish(mqttOutTopic,"Low speed command send over RF");
   }
   else if (s == "timer") {
-    sendCommand(timer1);
-    mqttClient.publish(mqttTopic,"Timer command send over RF");
+    rf.sendCommand(IthoTimer1);
+    mqttClient.publish(mqttOutTopic,"Timer command send over RF");
   }
   else if (s == "join") {
-    sendCommand(join);
-    mqttClient.publish(mqttTopic,"Join command send over RF");
+    rf.sendCommand(IthoJoin);
+    mqttClient.publish(mqttOutTopic,"Join command send over RF");
   }
 }
 
